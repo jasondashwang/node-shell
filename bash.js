@@ -6,9 +6,9 @@ process.stdout.write('prompt > ');
 
 // The stdin 'data' event fires after a user types in a line
 process.stdin.on('data', function (data) {
-  var cmd = data.toString().trim(); // remove the newline
+  var dataArr = data.toString().trim().split(" "); // remove the newline
 
-  commands[cmd]();
+  commands[dataArr[0]](dataArr.slice(1));
 
 });
 

@@ -10,9 +10,35 @@ function ls(){
   });
 }
 
+function echo (arr) {
+  arr.forEach(function (e){
+  process.stdout.write(e.toString() + " ");    
+  });
+  process.stdout.write('\nprompt > ');
+}
+
 function pwd(){
   process.stdout.write(process.cwd());
   process.stdout.write('\nprompt > ');
+}
+
+function cat (arg) {
+  fs.readFile(arg[0], function (err, contents) {
+    if(err) throw new TypeError("This file doesn't exist");
+
+    process.stdout.write(contents.toString());
+
+    process.stdout.write('\nprompt > ');
+  });
+
+}
+
+function head () {
+
+}
+
+function tail () {
+
 }
 
 function getDate(){
@@ -114,3 +140,5 @@ function getDate(){
 exports.pwd = pwd;
 exports.date = getDate;
 exports.ls = ls;
+exports.echo = echo;
+exports.cat = cat;
