@@ -33,12 +33,31 @@ function cat (arg) {
 
 }
 
-function head () {
+function head (arg) {
+  fs.readFile(arg[0], function (err, contents) {
+    if(err) throw new TypeError("This file doesn't exist");
 
+    var contArr = contents.toString().split("\n").slice(0,10);
+    contArr.forEach(function (e) {
+      process.stdout.write(e + '\n');
+    });
+  process.stdout.write('\nprompt > ');
+  });
 }
 
-function tail () {
+function tail (arg) {
+  fs.readFile(arg[0], function (err, contents) {
+    if(err) throw new TypeError("This file doesn't exist");
 
+    var contArr = contents.toString().split("\n");
+    
+    contArr = contArr.slice(contArr.length - 10);
+
+    contArr.forEach(function (e) {
+      process.stdout.write(e + '\n');
+    });
+  process.stdout.write('\nprompt > ');
+  });
 }
 
 function getDate(){
@@ -142,3 +161,5 @@ exports.date = getDate;
 exports.ls = ls;
 exports.echo = echo;
 exports.cat = cat;
+exports.head = head;
+exports.tail = tail;
