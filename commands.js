@@ -4,20 +4,21 @@ var request = require ('request');
 
 
 
-function ls(arg, done){
+function ls(stdin, arg, done){
   fs.readdir('.', function(err, files) {
     if (err) throw err;
     var output = '';
     files.forEach(function(file) {
        output += file.toString() + "\n";
     })
+
     done(output);
   });
 
 
 }
 
-function echo (arr, done) {
+function echo (stdin, arr, done) {
   var output = '';
   arr.forEach(function (e){
     output += e.toString() + " ";
@@ -26,24 +27,21 @@ function echo (arr, done) {
   done(output);
 }
 
-function pwd(arg, done){
+function pwd(stdin, arg, done){
   done(process.cwd());
 }
 
-function cat (arg, done) {
+function cat (stdin, arg, done) {
   fs.readFile(arg[0], function (err, contents) {
     if(err) throw new TypeError("This file doesn't exist");
-
-    done(contents.toString());
+    done(stdin, contents.toString());
   });
 
 }
 
-function head (arg, done) {
-  fs.readFile(arg[0], function (err, contents) {
-    if(err) throw new TypeError("This file doesn't exist");
-
-    var contArr = contents.toString().split("\n").slice(0,10);
+function head (stdin, arg, done) {
+  if(typeof arg === 'string'){
+    var contArr = arg.split("\n").slice(0,10);
 
     var output = '';
 
@@ -51,18 +49,28 @@ function head (arg, done) {
       output += e + '\n';
     });
 
-    done(output);
+    done(stdin, output);
+  } else {
+    fs.readFile(arg[0], function (err, contents) {
+      if(err) throw new TypeError("This file doesn't exist");
 
-  });
+      var contArr = contents.toString().split("\n").slice(0,10);
+
+      var output = '';
+
+      contArr.forEach(function (e) {
+        output += e + '\n';
+      });
+
+      done(stdin, output);
+
+    });
+  }
 }
 
-function tail (arg, done) {
-  fs.readFile(arg[0], function (err, contents) {
-    if(err) throw new TypeError("This file doesn't exist");
-
-    var contArr = contents.toString().split("\n");
-
-    contArr = contArr.slice(contArr.length - 10);
+function tail (stdin, arg, done) {
+  if(typeof arg === 'string'){
+    var contArr = arg.split("\n").slice(0,10);
 
     var output = '';
 
@@ -70,11 +78,27 @@ function tail (arg, done) {
       output += e + '\n';
     });
 
-    done(output);
-  });
+    done(stdin, output);
+  } else {
+    fs.readFile(arg[0], function (err, contents) {
+      if(err) throw new TypeError("This file doesn't exist");
+
+      var contArr = contents.toString().split("\n");
+
+      contArr = contArr.slice(contArr.length - 10);
+
+      var output = '';
+
+      contArr.forEach(function (e) {
+        output += e + '\n';
+      });
+
+      done(stdin, output);
+    });
+  }
 }
 
-function curl (arg, done) {
+function curl (stdin, arg, done) {
   var url = arg[0];
   if(!url.match(/http:\/\//)) url = 'http://' + url;
   request(url, function (error, response, body) {
@@ -86,7 +110,7 @@ function curl (arg, done) {
 
 }
 
-function getDate(arg, done){
+function getDate(stdin, arg, done){
   var date = new Date();
   var currentDay = date.getDay();
 

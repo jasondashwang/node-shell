@@ -6,15 +6,26 @@ process.stdout.write('prompt > ');
 
 // The stdin 'data' event fires after a user types in a line
 process.stdin.on('data', function (data) {
-  var dataArr = data.toString().trim().split(" "); // remove the newline
+  var cmdString = data.toString().trim();
+  var cmdList = cmdString.split(/\s*\|\s*/g); // Makes list out of pipe characters
 
-  commands[dataArr[0]](dataArr.slice(1), done);
+  var dataArr = cmdList[0].split(" ");
+
+  cmdList = cmdList.slice(1);
+
+
+  commands[dataArr[0]](cmdList, dataArr.slice(1), done);
 
 });
 
-var done = function(output, done) {
-  process.stdout.write(output + '\n');
-  process.stdout.write('prompt > ');
+var done = function(stdin, output) {
+  if(stdin.length === 0){
+    process.stdout.write(output + '\n');
+    process.stdout.write('prompt > ');
+  } else {
+    var newCommand = stdin.shift();
+    commands[newCommand](stdin, output, done);
+  }
 }
 
 
