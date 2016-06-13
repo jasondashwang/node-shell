@@ -18,13 +18,17 @@ process.stdin.on('data', function (data) {
 
 });
 
-var done = function(stdin, output) {
+
+var done = function(stdin, output) { 
   if(stdin.length === 0){
     process.stdout.write(output + '\n');
     process.stdout.write('prompt > ');
   } else {
     var newCommand = stdin.shift();
-    commands[newCommand](stdin, output, done);
+
+    var expression = newCommand.split(" ");
+
+    commands[expression[0]](stdin, output, done,expression[1]);
   }
 }
 

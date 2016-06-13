@@ -18,6 +18,22 @@ function ls(stdin, arg, done){
 
 }
 
+
+function grep (stdin, arg, done, word) {
+
+  var count = 0; 
+  var arrOfWords = arg.split(" ");
+
+  arrOfWords.forEach(function (e) {
+    if(e.match(word)) count++;
+  });
+
+
+  done(stdin, count);
+
+
+}
+
 function echo (stdin, arr, done) {
   var output = '';
   arr.forEach(function (e){
@@ -213,3 +229,4 @@ exports.cat = cat;
 exports.head = head;
 exports.tail = tail;
 exports.curl = curl;
+exports.grep = grep;
