@@ -1,80 +1,92 @@
 var fs = require('fs');
 var request = require ('request');
 
-function ls(){
+
+
+
+function ls(arg, done){
   fs.readdir('.', function(err, files) {
     if (err) throw err;
+    var output = '';
     files.forEach(function(file) {
-      process.stdout.write(file.toString() + "\n");
+       output += file.toString() + "\n";
     })
-    process.stdout.write('prompt > ');
+    done(output);
   });
+
+
 }
 
-function echo (arr) {
+function echo (arr, done) {
+  var output = '';
   arr.forEach(function (e){
-  process.stdout.write(e.toString() + " ");    
+    output += e.toString() + " ";
   });
-  process.stdout.write('\nprompt > ');
+
+  done(output);
 }
 
-function pwd(){
-  process.stdout.write(process.cwd());
-  process.stdout.write('\nprompt > ');
+function pwd(arg, done){
+  done(process.cwd());
 }
 
-function cat (arg) {
+function cat (arg, done) {
   fs.readFile(arg[0], function (err, contents) {
     if(err) throw new TypeError("This file doesn't exist");
 
-    process.stdout.write(contents.toString());
-
-    process.stdout.write('\nprompt > ');
+    done(contents.toString());
   });
 
 }
 
-function head (arg) {
+function head (arg, done) {
   fs.readFile(arg[0], function (err, contents) {
     if(err) throw new TypeError("This file doesn't exist");
 
     var contArr = contents.toString().split("\n").slice(0,10);
+
+    var output = '';
+
     contArr.forEach(function (e) {
-      process.stdout.write(e + '\n');
+      output += e + '\n';
     });
-  process.stdout.write('\nprompt > ');
+
+    done(output);
+
   });
 }
 
-function tail (arg) {
+function tail (arg, done) {
   fs.readFile(arg[0], function (err, contents) {
     if(err) throw new TypeError("This file doesn't exist");
 
     var contArr = contents.toString().split("\n");
-    
+
     contArr = contArr.slice(contArr.length - 10);
 
+    var output = '';
+
     contArr.forEach(function (e) {
-      process.stdout.write(e + '\n');
+      output += e + '\n';
     });
-  process.stdout.write('\nprompt > ');
+
+    done(output);
   });
 }
 
-function curl (arg) {
+function curl (arg, done) {
   var url = arg[0];
   if(!url.match(/http:\/\//)) url = 'http://' + url;
   request(url, function (error, response, body) {
   if (!error && response.statusCode == 200) {
-    process.stdout.write(body); // Show the HTML for the Google homepage.
-    process.stdout.write('\nprompt > ');
+    done(body); // Show the HTML
   }
 
 });
 
 }
 
-function getDate(){
+function getDate(arg, done){
   var date = new Date();
   var currentDay = date.getDay();
 
@@ -99,7 +111,7 @@ function getDate(){
         break;
     case 6:
         currentDay = "Sat";
-        break
+        break;
   }
 
 
@@ -165,9 +177,8 @@ function getDate(){
 
   var finalDate = [currentDay, currentMonth, currentDate, currentYear, currentTime].join(' ');
 
-  process.stdout.write(finalDate);
+  done(finalDate);
 
-  process.stdout.write('\nprompt > ');
 }
 
 exports.pwd = pwd;

@@ -8,10 +8,14 @@ process.stdout.write('prompt > ');
 process.stdin.on('data', function (data) {
   var dataArr = data.toString().trim().split(" "); // remove the newline
 
-  commands[dataArr[0]](dataArr.slice(1));
+  commands[dataArr[0]](dataArr.slice(1), done);
 
 });
 
+var done = function(output, done) {
+  process.stdout.write(output + '\n');
+  process.stdout.write('prompt > ');
+}
 
 
 
