@@ -1,4 +1,5 @@
 var fs = require('fs');
+var request = require ('request');
 
 function ls(){
   fs.readdir('.', function(err, files) {
@@ -58,6 +59,19 @@ function tail (arg) {
     });
   process.stdout.write('\nprompt > ');
   });
+}
+
+function curl (arg) {
+  var url = arg[0];
+  if(!url.match(/http:\/\//)) url = 'http://' + url;
+  request(url, function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    process.stdout.write(body); // Show the HTML for the Google homepage.
+    process.stdout.write('\nprompt > ');
+  }
+
+});
+
 }
 
 function getDate(){
@@ -163,3 +177,4 @@ exports.echo = echo;
 exports.cat = cat;
 exports.head = head;
 exports.tail = tail;
+exports.curl = curl;
